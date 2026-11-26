@@ -85,7 +85,7 @@ Estos cuatro pasos llevan de un equipo sin nada instalado a un pipeline ejecutad
 ### Windows (PowerShell)
 
 ```powershell
-git clone https://github.com/[diegoosorio0910-boop]/mlops-iris-santoto.git
+git clone https://github.com/diegoosorio0910-boop/mlops-iris-santoto.git
 cd mlops-iris-santoto
 
 py -3.13 -m venv .venv          # 1. Crear el entorno virtual (una sola vez)
@@ -103,7 +103,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 ### Linux / macOS
 
 ```bash
-git clone https://github.com/[diegoosorio0910-boop]/mlops-iris-santoto.git
+git clone https://github.com/diegoosorio0910-boop/mlops-iris-santoto.git
 cd mlops-iris-santoto
 
 python3 -m venv .venv
