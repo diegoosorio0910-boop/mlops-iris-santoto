@@ -1,0 +1,9 @@
+  Contrato: iris_input_contract v1.1.0
+  Reglas activas: 8
+  Caso 1 - ejemplo de entrada VALIDA del contrato
+    ACEPTADO (0 errores) -> el registro puede ir al modelo
+  Caso 2 - ejemplo de entrada INVALIDA del contrato
+    RECHAZADO (3 errores) -> el modelo no se ejecuta
+    - columna 'sepal_length' [type]: el valor 'cinco' no corresponde al tipo number
+    - columna 'sepal_width' [nullable]: la columna no admite valores nulos
+    - columna 'petal_length' [maximum]: el valor 51.0 supera el maximo permitido 7.0

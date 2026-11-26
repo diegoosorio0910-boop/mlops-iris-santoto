@@ -1,0 +1,5 @@
+Escenario 1 aplicado sobre data/train.csv
+  Texto en vez de numero: alguien escribio 'cinco' en sepal_length
+
+Ahora ejecute:  python run_pipeline.py --sin-preparar
+Para restaurar: python romper_datos.py --restaurar

@@ -1,0 +1,26 @@
+========================================================================
+PIPELINE MLOPS - IRIS | Seminario de Grado II | Actividad 2.1
+========================================================================
+Inicio: 2026-11-25 20:02:26
+Etapas programadas: 2, 3, 4
+
+------------------------------------------------------------------------
+ETAPA 2: Validacion y control de calidad
+------------------------------------------------------------------------
+  Contrato: iris_input_contract v1.1.0
+  Reglas activas: 8
+  Validacion fallida para train.csv: 1 error(es)
+    - Fila 3, columna 'sepal_length' [type]: el valor 'cinco' no corresponde al tipo number
+  train.csv: 1 advertencia(s) registrada(s), no detienen el pipeline
+    - Fila 61, archivo [duplicado]: la fila esta repetida en el archivo
+  test.csv: VALIDO - cumple las 8 reglas del contrato
+  Log de trazabilidad: validacion_20261125_200226.json
+
+  >>> ERROR EN LA ETAPA 2: Validacion y control de calidad
+  >>> codigo de salida 1. El pipeline se detiene aqui.
+
+========================================================================
+PIPELINE DETENIDO POR ERROR
+========================================================================
+Log de ejecucion: logs/pipeline_20261125_200226.log
+Datos originales restaurados desde data/_backup/

@@ -1,0 +1,79 @@
+========================================================================
+PIPELINE MLOPS - IRIS | Seminario de Grado II | Actividad 2.1
+========================================================================
+Inicio: 2026-11-25 20:02:16
+Etapas programadas: 1, 2, 3, 4
+
+------------------------------------------------------------------------
+ETAPA 1: Preparacion de datos
+------------------------------------------------------------------------
+  Dataset original cargado: 150 filas, 5 columnas
+  Guardado en: data/raw/iris.csv
+  Division estratificada 80/20 con random_state=42
+  train.csv: 120 filas  |  test.csv: 30 filas
+  Distribucion por clase en entrenamiento: 0=40, 1=40, 2=40
+
+  Etapa 1 completada en 1.10 s
+
+------------------------------------------------------------------------
+ETAPA 2: Validacion y control de calidad
+------------------------------------------------------------------------
+  Contrato: iris_input_contract v1.1.0
+  Reglas activas: 8
+  train.csv: VALIDO - cumple las 8 reglas del contrato
+  train.csv: 1 advertencia(s) registrada(s), no detienen el pipeline
+    - Fila 61, archivo [duplicado]: la fila esta repetida en el archivo
+  test.csv: VALIDO - cumple las 8 reglas del contrato
+  Log de trazabilidad: validacion_20261125_200217.json
+
+  Etapa 2 completada en 0.03 s
+
+------------------------------------------------------------------------
+ETAPA 3: Entrenamiento y registro con MLflow
+------------------------------------------------------------------------
+  Entrenamiento: 120 filas | Prueba: 30 filas
+  Accuracy entrenamiento: 0.9833
+  Accuracy prueba:        0.9667
+  F1 macro prueba:        0.9666
+  Validacion cruzada 5-fold: 0.9583 (+/- 0.0000)
+  Brecha entrenamiento-prueba: 0.0167
+  Modelo guardado en: models/model.pkl
+  Run registrado en MLflow | experimento: iris-pipeline-semana2
+
+  Etapa 3 completada en 7.44 s
+
+------------------------------------------------------------------------
+ETAPA 4: Pruebas automatizadas
+------------------------------------------------------------------------
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python3
+rootdir: /home/claude/mlops-iris-santoto
+plugins: platformdirs-4.13.5, anyio-4.15.1
+collecting ... collected 10 items
+
+tests/test_model.py::test_01_archivos_procesados_existen PASSED          [ 10%]
+tests/test_model.py::test_02_archivos_no_estan_vacios PASSED             [ 20%]
+tests/test_model.py::test_03_columnas_coinciden_con_el_contrato PASSED   [ 30%]
+tests/test_model.py::test_04_sin_valores_nulos PASSED                    [ 40%]
+tests/test_model.py::test_05_variable_objetivo_con_dominio_valido PASSED [ 50%]
+tests/test_model.py::test_06_archivo_del_modelo_existe PASSED            [ 60%]
+tests/test_model.py::test_07_modelo_se_carga_y_predice PASSED            [ 70%]
+tests/test_model.py::test_08_accuracy_supera_umbral_minimo PASSED        [ 80%]
+tests/test_model.py::test_09_sin_fuga_de_datos_entre_train_y_test PASSED [ 90%]
+tests/test_model.py::test_10_brecha_train_test_no_indica_sobreajuste PASSED [100%]
+
+============================== 10 passed in 1.00s ==============================
+
+  Etapa 4 completada en 1.50 s
+
+========================================================================
+PIPELINE FINALIZADO CORRECTAMENTE
+========================================================================
+  ETAPA 1 - Preparacion de datos: OK (1.10s)
+  ETAPA 2 - Validacion y control de calidad: OK (0.03s)
+  ETAPA 3 - Entrenamiento y registro con MLflow: OK (7.44s)
+  ETAPA 4 - Pruebas automatizadas: OK (1.50s)
+
+Duracion total: 10.07 s
+Log de ejecucion: logs/pipeline_20261125_200226.log
+Para ver los experimentos:  mlflow ui --backend-store-uri sqlite:///mlflow.db

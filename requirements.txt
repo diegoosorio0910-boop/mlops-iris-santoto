@@ -1,0 +1,9 @@
+# MLOps Iris Santoto - Seminario de Grado II, Actividad 2.1
+# Versiones fijadas para garantizar la reproducibilidad del entorno.
+# Instalacion: pip install -r requirements.txt
+scikit-learn==1.9.1
+pandas==3.0.5
+numpy==2.5.3
+joblib==1.6.0
+mlflow==3.18.0
+pytest==9.1.1

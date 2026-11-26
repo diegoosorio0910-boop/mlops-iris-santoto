@@ -1,0 +1,171 @@
+{
+  "contract_name": "iris_input_contract",
+  "contract_version": "1.1.0",
+  "updated_at": "2026-11-25",
+  "owner": "Diego Osorio - Especializacion en Ciencia de Datos, Universidad Santo Tomas Seccional Tunja",
+  "description": "Contrato de datos oficial del proyecto MLOps-Iris-Santoto. Define los nombres, tipos, obligatoriedad, nulabilidad, rangos y dominios que deben cumplir los datos ANTES del entrenamiento y los que debe cumplir cada registro enviado al modelo en inferencia. Es la unica fuente de verdad para src/validate_data.py y para el futuro servicio de prediccion (FastAPI, semana 3).",
+  "dataset": {
+    "name": "iris",
+    "source": "sklearn.datasets.load_iris",
+    "unit_of_measure": "centimetros",
+    "expected_row_count_min": 20,
+    "allow_duplicate_rows": false,
+    "allow_extra_columns": false,
+    "duplicate_rows_severity": "warning",
+    "duplicate_rows_note": "El dataset Iris original contiene dos filas identicas documentadas (5.8, 2.7, 5.1, 1.9, species=2). Por esa razon la regla R6 se declara con severidad 'warning': se reporta en el log para trazabilidad, pero no detiene el pipeline. Las demas reglas tienen severidad 'error' y si lo detienen."
+  },
+  "target": "species",
+  "feature_order": [
+    "sepal_length",
+    "sepal_width",
+    "petal_length",
+    "petal_width"
+  ],
+  "columns": {
+    "sepal_length": {
+      "description": "Longitud del sepalo en centimetros",
+      "type": "number",
+      "required": true,
+      "nullable": false,
+      "minimum": 4.0,
+      "maximum": 8.0,
+      "scope": [
+        "training",
+        "inference"
+      ]
+    },
+    "sepal_width": {
+      "description": "Ancho del sepalo en centimetros",
+      "type": "number",
+      "required": true,
+      "nullable": false,
+      "minimum": 2.0,
+      "maximum": 4.5,
+      "scope": [
+        "training",
+        "inference"
+      ]
+    },
+    "petal_length": {
+      "description": "Longitud del petalo en centimetros",
+      "type": "number",
+      "required": true,
+      "nullable": false,
+      "minimum": 1.0,
+      "maximum": 7.0,
+      "scope": [
+        "training",
+        "inference"
+      ]
+    },
+    "petal_width": {
+      "description": "Ancho del petalo en centimetros",
+      "type": "number",
+      "required": true,
+      "nullable": false,
+      "minimum": 0.1,
+      "maximum": 2.5,
+      "scope": [
+        "training",
+        "inference"
+      ]
+    },
+    "species": {
+      "description": "Clase objetivo codificada: 0=setosa, 1=versicolor, 2=virginica. Solo se exige en los archivos de entrenamiento y prueba; en inferencia es la salida del modelo, no una entrada.",
+      "type": "integer",
+      "required": true,
+      "nullable": false,
+      "minimum": 0,
+      "maximum": 2,
+      "allowed_values": [
+        0,
+        1,
+        2
+      ],
+      "class_labels": {
+        "0": "setosa",
+        "1": "versicolor",
+        "2": "virginica"
+      },
+      "scope": [
+        "training"
+      ]
+    }
+  },
+  "quality_gates": {
+    "min_accuracy_test": 0.8,
+    "max_gap_train_test_accuracy": 0.15,
+    "train_test_overlap_allowed": 0,
+    "min_rows_per_class_train": 5
+  },
+  "split": {
+    "strategy": "train_test_split estratificado",
+    "test_size": 0.2,
+    "random_state": 42
+  },
+  "examples": {
+    "valid_input": {
+      "comment": "Registro de inferencia que CUMPLE el contrato. Esperado: ACEPTADO, el modelo predice la especie.",
+      "payload": {
+        "sepal_length": 5.1,
+        "sepal_width": 3.5,
+        "petal_length": 1.4,
+        "petal_width": 0.2
+      },
+      "expected_result": {
+        "accepted": true,
+        "exit_code": 0,
+        "errors": [],
+        "predicted_species_example": 0,
+        "predicted_label_example": "setosa"
+      }
+    },
+    "invalid_input": {
+      "comment": "Registro de inferencia que INCUMPLE el contrato en tres reglas simultaneas. Esperado: RECHAZADO, el pipeline se detiene y el modelo no se ejecuta.",
+      "payload": {
+        "sepal_length": "cinco",
+        "sepal_width": null,
+        "petal_length": 51.0,
+        "petal_width": 0.2
+      },
+      "expected_result": {
+        "accepted": false,
+        "exit_code": 1,
+        "errors": [
+          {
+            "column": "sepal_length",
+            "rule": "type",
+            "value": "cinco",
+            "message": "el valor 'cinco' no corresponde al tipo number"
+          },
+          {
+            "column": "sepal_width",
+            "rule": "nullable",
+            "value": null,
+            "message": "la columna no admite valores nulos"
+          },
+          {
+            "column": "petal_length",
+            "rule": "maximum",
+            "value": 51.0,
+            "message": "el valor 51.0 supera el maximo permitido 7.0"
+          }
+        ]
+      }
+    }
+  },
+  "validation_rules_implemented": [
+    "R1 - Estructura: todas las columnas requeridas estan presentes y no hay columnas extra [error]",
+    "R2 - Nulos: ninguna columna con nullable=false admite vacios [error]",
+    "R3 - Tipos: number acepta enteros y decimales; integer rechaza decimales y texto [error]",
+    "R4 - Rangos: cada valor numerico debe estar entre minimum y maximum [error]",
+    "R5 - Dominio: species solo admite los valores de allowed_values [error]",
+    "R6 - Duplicados: se reportan las filas identicas repetidas [warning]",
+    "R7 - Volumen: el archivo debe superar expected_row_count_min filas [error]",
+    "R8 - Representatividad: cada clase debe tener al menos min_rows_per_class_train filas [error]"
+  ],
+  "severity_model": {
+    "error": "incumplimiento que detiene el pipeline (codigo de salida 1)",
+    "warning": "hallazgo que se registra en el log y no detiene el pipeline (codigo 0)"
+  }
+}
